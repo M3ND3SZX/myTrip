@@ -1,12 +1,17 @@
 package br.senai.sp.jandira.mytrip
 
 import android.os.Bundle
+import android.widget.ScrollView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,17 +20,32 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.AudioFile
+import androidx.compose.material.icons.filled.CameraEnhance
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.PhoneIphone
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxColors
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -39,14 +59,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import br.senai.sp.jandira.mytrip.screens.HomePage
+import br.senai.sp.jandira.mytrip.screens.MytripLogin
+import br.senai.sp.jandira.mytrip.screens.NovaConta
 import br.senai.sp.jandira.mytrip.ui.theme.MytripTheme
 
 class MainActivity : ComponentActivity() {
@@ -59,120 +90,20 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MytripLogin()
+                    val controleDeNavegacao = rememberNavController()
+                    NavHost(navController = controleDeNavegacao ,
+                        startDestination = "login" ){
+                        composable(route ="login" ){ MytripLogin(controleDeNavegacao)}
+                        composable(route ="cadastro" ){ NovaConta(controleDeNavegacao) }
+                        composable(route ="home" ){ HomePage(controleDeNavegacao) }
+                    }
+
                 }
             }
         }
     }
 }
 
-@Composable
-fun MytripLogin () {
-    Surface (modifier = Modifier .fillMaxSize())
-    {
-        Column {
-            Card(
-                modifier = Modifier
-                    .size(130.dp, 40.dp)
-                    .align(Alignment.End),
-                colors = CardDefaults.cardColors(Color(0xffCF06F0)),
-                shape = RoundedCornerShape(bottomStart = 16.dp)
-            ) {}
-
-            Column(
-                modifier = Modifier
-                    .padding(start = 25.dp, top = 160.dp)
-            ) {
-                Text(
-                    text = "Login",
-                    color = Color(0xffCF06F0),
-                    fontSize = 48.sp,
-                    fontWeight = FontWeight.ExtraBold,
-
-                    )
-                Text(
-                    text = "Please sign in to continue.",
-                    color = Color(0xffA09C9C)
-                )
-            }
-
-            Spacer(modifier = Modifier .padding(30.dp))
-            OutlinedTextField(
-                value = "teste@email.com",
-                onValueChange = {},
-                shape = RoundedCornerShape(16.dp),
-                label = {
-                    Text(text = "email")
-                },
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .width(327.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.White,
-                    focusedContainerColor = Color.White,
-                    unfocusedBorderColor = Color(0xffCF06F0),
-                    focusedBorderColor = Color(0xffCF06F0),
-                ),
-                leadingIcon = {
-                    Icon(imageVector = Icons.Filled.Email, contentDescription = "lock",
-                        modifier = Modifier
-                            .offset(y=-0.dp),
-                        tint = Color(0xffCF06F0)
-                    )
-                }
-
-            )
-            Spacer(modifier = Modifier .padding(15.dp))
-
-            OutlinedTextField(
-
-                value = "*******",
-                onValueChange = {},
-                shape = RoundedCornerShape(16.dp),
-                label = {
-                    Text(text = "password")
-                },
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .width(327.dp),
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = Color.White,
-                    focusedContainerColor = Color.White,
-                    unfocusedBorderColor = Color(0xffCF06F0),
-                    focusedBorderColor = Color(0xffCF06F0),
-                ),
-                leadingIcon = {
-                    Icon(imageVector = Icons.Filled.Lock, contentDescription = "lock",
-                        modifier = Modifier
-                            .offset(y=-0.dp),
-                        tint = Color(0xffCF06F0)
-                    )
-                }
-            )
-
-            Spacer(modifier = Modifier .padding(20.dp))
-
-            Button(onClick = { /*TODO*/ },
-                modifier = Modifier
-                    .size(134.dp, 48.dp)
-                    .align(Alignment.End)
-                    .offset(x = -35.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xffCF06F0)),
-                shape = RoundedCornerShape(16.dp)
-                
-            ) {
-                Text(
-                    text = "SING IN",
-                    fontWeight = FontWeight.ExtraBold
-                )
-
-                Image(
-                    imageVector = Icons.Filled.ArrowForward, contentDescription = "",
-                    modifier = Modifier
-                        .offset(y = -0.dp)
-                )
-            }
-        }
 
 
 
@@ -180,13 +111,13 @@ fun MytripLogin () {
 
 
 
-    }
-}
+
+
 
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun GreetingPreview() {
     MytripTheme {
-        MytripLogin()
+
     }
 }
