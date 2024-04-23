@@ -3,6 +3,7 @@ package br.senai.sp.jandira.mytrip.screens
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -47,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.mytrip.R
+import br.senai.sp.jandira.mytrip.repository.CategoriaRepository
 import br.senai.sp.jandira.mytrip.repository.ViagemRepository
 import br.senai.sp.jandira.mytrip.simplificarData
 
@@ -54,6 +56,7 @@ import br.senai.sp.jandira.mytrip.simplificarData
 fun HomePage(controleDeNavegacao: NavHostController) {
 
     val viagens = ViagemRepository().listarTodasAsViagens(LocalContext.current)
+    val categorias = CategoriaRepository().listarTodasCategorias(LocalContext.current)
 
     var pesquisaState = remember {
         mutableStateOf("")
@@ -152,11 +155,12 @@ fun HomePage(controleDeNavegacao: NavHostController) {
             Spacer(modifier = Modifier.height(5.dp))
 
             LazyRow() {
-                items(4) {
+                items(categorias) {
                     Card(
                         modifier = Modifier
                             .size(120.dp, 75.dp)
-                            .padding(end = 8.dp),
+                            .padding(end = 8.dp)
+                            .clickable {},
                         colors = CardDefaults
                             .cardColors(containerColor = Color(0xffCF06F0)),
                         elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
@@ -167,12 +171,12 @@ fun HomePage(controleDeNavegacao: NavHostController) {
                             modifier = Modifier.fillMaxSize()
                         ) {
                             Image(
-                                painter = painterResource(id = R.drawable.montanha),
+                                painter = if(it.imagem == null) painterResource(id = R.drawable.no_image) else it.imagem!!,
                                 contentDescription = ""
                             )
 
                             Text(
-                                text = "Montain",
+                                text = it.categoria,
                                 color = Color.White,
                                 fontSize = 14.sp
                             )
@@ -180,55 +184,6 @@ fun HomePage(controleDeNavegacao: NavHostController) {
                         }
 
                     }
-
-                    Card(
-                        modifier = Modifier
-                            .size(120.dp, 75.dp)
-                            .padding(end = 8.dp),
-                        colors = CardDefaults
-                            .cardColors(containerColor = Color(0xffEAABF4)),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 10.dp)
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.neve),
-                                contentDescription = ""
-                            )
-                            Text(
-                                text = "Snow",
-                                color = Color.White,
-                                fontSize = 14.sp
-                            )
-                        }
-                    }
-
-                    Card(
-                        modifier = Modifier
-                            .size(120.dp, 75.dp)
-                            .padding(end = 8.dp),
-                        colors = CardDefaults
-                            .cardColors(containerColor = Color(0xffEAABF4)),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
-                    ) {
-                        Column(
-                            horizontalAlignment = Alignment.CenterHorizontally,
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxSize()
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.guarda_sol),
-                                contentDescription = ""
-                            )
-                            Text(
-                                text = "Beach",
-                                color = Color.White,
-                                fontSize = 14.sp
-                            )
-                        }
                     }
                 }
             }
@@ -269,7 +224,8 @@ fun HomePage(controleDeNavegacao: NavHostController) {
             Text(
                 text = "Past Trips",
                 color = Color(0xff565454),
-                fontWeight = FontWeight(400)
+                fontWeight = FontWeight(400),
+                modifier = Modifier .padding(8.dp)
             )
 
             LazyColumn() {
@@ -357,6 +313,6 @@ fun HomePage(controleDeNavegacao: NavHostController) {
 
         }
     }
-}
+
 
 
