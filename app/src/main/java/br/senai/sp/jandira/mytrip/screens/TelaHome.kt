@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -44,9 +47,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import br.senai.sp.jandira.mytrip.R
+import br.senai.sp.jandira.mytrip.repository.ViagemRepository
+import br.senai.sp.jandira.mytrip.simplificarData
 
 @Composable
 fun HomePage(controleDeNavegacao: NavHostController) {
+
+    val viagens = ViagemRepository().listarTodasAsViagens(LocalContext.current)
 
     var pesquisaState = remember {
         mutableStateOf("")
@@ -266,7 +273,7 @@ fun HomePage(controleDeNavegacao: NavHostController) {
             )
 
             LazyColumn() {
-                items(3) {
+                items(viagens) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -274,7 +281,7 @@ fun HomePage(controleDeNavegacao: NavHostController) {
                     ) {
                         Card(
                             modifier = Modifier
-                                .size(350.dp, 230.dp)
+                                .width(350.dp)
                                 .padding(vertical = 8.dp),
                             colors = CardDefaults.cardColors(Color.White),
                             elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
@@ -292,11 +299,16 @@ fun HomePage(controleDeNavegacao: NavHostController) {
                                         .height(106.dp)
                                         .width(330.dp)
                                 ) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.london),
-                                        contentDescription = "",
-                                        contentScale = ContentScale.Crop
-                                    )
+                                    Surface {
+                                        Image(
+                                            painter = if(it.imagem == null) painterResource(id = R.drawable.no_image) else it.imagem!!,
+                                            contentDescription = "",
+                                            contentScale = ContentScale.Crop,
+                                            modifier = Modifier .fillMaxSize()
+
+                                        )
+                                    }
+
                                 }
                                 Spacer(modifier = Modifier.height(5.dp))
                                 Column(
@@ -304,14 +316,14 @@ fun HomePage(controleDeNavegacao: NavHostController) {
                                     horizontalAlignment = Alignment.Start
                                 ) {
                                     Text(
-                                        text = "London, 2019",
+                                        text = "${it.destino}, ${it.dataChegada.year}",
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight(400),
                                         color = Color(0xffCF06F0)
                                     )
 
                                     Text(
-                                        text = "London is the capital and largest city of  the United Kingdom, with a population of just under 9 million.",
+                                        text = it.descricao ,
                                         fontSize = 12.sp,
                                         color = Color(0xffA09C9C),
                                         lineHeight = 15.sp
@@ -324,7 +336,7 @@ fun HomePage(controleDeNavegacao: NavHostController) {
                                     horizontalArrangement = Arrangement.End
                                 ) {
                                     Text(
-                                        text = "18 Feb - 21 Feb",
+                                        text = "${simplificarData(it.dataChegada)} - ${simplificarData(it.dataPartida)}",
                                         color = Color(0xffCF06F0),
                                         fontSize = 12.sp,
                                         fontWeight = FontWeight(400)
@@ -334,67 +346,7 @@ fun HomePage(controleDeNavegacao: NavHostController) {
                             }
                         }
 
-                        Card(
-                            modifier = Modifier
-                                .size(350.dp, 230.dp)
-                                .padding(vertical = 8.dp),
-                            colors = CardDefaults.cardColors(Color.White),
-                            elevation = CardDefaults.cardElevation(defaultElevation = 5.dp),
-                            shape = RoundedCornerShape(8.dp),
-                            border = BorderStroke(1.dp, color = Color.White)
-                        ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(8.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Card(
-                                    modifier = Modifier
-                                        .height(106.dp)
-                                        .width(330.dp)
-                                ) {
-                                    Image(
-                                        painter = painterResource(id = R.drawable.porto),
-                                        contentDescription = "",
-                                        contentScale = ContentScale.Crop
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(5.dp))
-                                Column(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalAlignment = Alignment.Start
-                                ) {
-                                    Text(
-                                        text = "Porto, 2022",
-                                        fontSize = 16.sp,
-                                        fontWeight = FontWeight(400),
-                                        color = Color(0xffCF06F0)
-                                    )
 
-                                    Text(
-                                        text = "Porto is the second city in Portugal, the capital of the Oporto District, and one of the Iberian Peninsula's major urban areas.",
-                                        fontSize = 12.sp,
-                                        color = Color(0xffA09C9C),
-                                        lineHeight = 10.sp
-                                    )
-
-                                }
-                                Spacer(modifier = Modifier.height(8.dp))
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.End
-                                ) {
-                                    Text(
-                                        text = "20 Dec - 26 Dec",
-                                        color = Color(0xffCF06F0),
-                                        fontSize = 12.sp,
-                                        fontWeight = FontWeight(400)
-                                    )
-                                }
-
-                            }
-                        }
                     }
 
 
@@ -406,3 +358,5 @@ fun HomePage(controleDeNavegacao: NavHostController) {
         }
     }
 }
+
+
