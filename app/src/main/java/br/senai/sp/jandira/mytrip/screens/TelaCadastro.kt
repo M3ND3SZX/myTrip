@@ -41,12 +41,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import br.senai.sp.jandira.mytrip.R
+import br.senai.sp.jandira.mytrip.model.Cadastro
+import br.senai.sp.jandira.mytrip.repository.CadastroRepository
 
 @Composable
 fun NovaConta(controleDeNavegacao: NavHostController) {
@@ -63,7 +67,7 @@ fun NovaConta(controleDeNavegacao: NavHostController) {
         mutableStateOf("")
     }
 
-    var usuarioState = remember {
+    var emailState = remember {
         mutableStateOf("")
     }
 
@@ -82,6 +86,7 @@ fun NovaConta(controleDeNavegacao: NavHostController) {
     var messageErrorState = remember {
         mutableStateOf("")
     }
+    val cr = CadastroRepository(LocalContext.current)
 
     Column(
         modifier = Modifier.height(800.dp)
@@ -111,13 +116,13 @@ fun NovaConta(controleDeNavegacao: NavHostController) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "Sign Up",
+                text = stringResource(id = R.string.sing_up),
                 color = Color(0xFFCF06F0),
                 fontSize = 36.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = "Create a new account",
+                text = stringResource(id = R.string.new_account),
                 color = Color(0xFFA09C9C)
             )
         }
@@ -158,7 +163,7 @@ fun NovaConta(controleDeNavegacao: NavHostController) {
             },
             shape = RoundedCornerShape(15.dp),
             label = {
-                Text(text = "Username")
+                Text(text = stringResource(id = R.string.username))
             },
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = Color.White,
@@ -192,7 +197,7 @@ fun NovaConta(controleDeNavegacao: NavHostController) {
             },
             shape = RoundedCornerShape(15.dp),
             label = {
-                Text(text = "Phone")
+                Text(text = stringResource(id = R.string.phone))
             },
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = Color.White,
@@ -220,13 +225,13 @@ fun NovaConta(controleDeNavegacao: NavHostController) {
                 .fillMaxWidth()
                 .padding(start = 20.dp)
                 .padding(end = 20.dp),
-            value = usuarioState.value,
+            value = emailState.value,
             onValueChange = {
-                usuarioState.value =it
+                emailState.value =it
             },
             shape = RoundedCornerShape(15.dp),
             label = {
-                Text(text = "E-mail")
+                Text(text = stringResource(id = R.string.email))
             },
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = Color.White,
@@ -259,7 +264,7 @@ fun NovaConta(controleDeNavegacao: NavHostController) {
             },
             shape = RoundedCornerShape(15.dp),
             label = {
-                Text(text = "Password")
+                Text(text =  stringResource(id = R.string.password))
             },
             colors = OutlinedTextFieldDefaults.colors(
                 unfocusedContainerColor = Color.White,
@@ -292,19 +297,27 @@ fun NovaConta(controleDeNavegacao: NavHostController) {
                     idadeState.value = it
                 }
             )
-            Text(text = "Over 18?")
+            Text(text = stringResource(id = R.string.over_eighteen))
         }
         Spacer(
             modifier = Modifier.height(8.dp)
         )
         Button(
             onClick ={
-                     if (userNameState.value != "" || telefoneState.value != "" ||usuarioState.value != "" || senhaState.value != "" ){
+                val cadastro = Cadastro(
+                    username = userNameState.value,
+                    telefone = telefoneState.value,
+                    email = emailState.value,
+                    senha = senhaState.value,
+                    maiorDeIdade = idadeState.value
+                )
+                     if (userNameState.value != "" || telefoneState.value != "" ||emailState.value != "" || senhaState.value != "" ){
                          Toast.makeText(
                              meuContexto,
                              cadastroState.value,
                              Toast.LENGTH_LONG
                          ).show()
+                         cr.salvar(cadastro = cadastro)
                          controleDeNavegacao.navigate("login")
                      }else{
                              isErrorState.value = true
@@ -321,7 +334,7 @@ fun NovaConta(controleDeNavegacao: NavHostController) {
             shape = RoundedCornerShape(15.dp),
         ) {
             Text(
-                text = "CREATE ACCOUNT",
+                text = stringResource(id = R.string.create_account),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold
             )

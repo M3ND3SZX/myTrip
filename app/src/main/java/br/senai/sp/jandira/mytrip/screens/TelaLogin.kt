@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.mytrip.screens
 
+import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,6 +34,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -42,13 +45,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import br.senai.sp.jandira.mytrip.R
+import br.senai.sp.jandira.mytrip.repository.CadastroRepository
 
 @Composable
 
 
 fun MytripLogin (controleDeNavegacao: NavHostController) {
 
-    var userNameState = remember {
+    var emailState = remember {
         mutableStateOf("")
     }
 
@@ -63,7 +68,7 @@ fun MytripLogin (controleDeNavegacao: NavHostController) {
     var messageErrorState = remember {
         mutableStateOf("")
     }
-
+    val cr = CadastroRepository(LocalContext.current)
     Column {
         Card(
             modifier = Modifier
@@ -78,28 +83,28 @@ fun MytripLogin (controleDeNavegacao: NavHostController) {
                 .padding(start = 25.dp, top = 160.dp)
         ) {
             Text(
-                text = "Login",
+                text = stringResource(id = R.string.login),
                 color = Color(0xffCF06F0),
                 fontSize = 48.sp,
                 fontWeight = FontWeight.ExtraBold,
 
                 )
             Text(
-                text = "Please sign in to continue.",
+                text = stringResource(id = R.string.text_login),
                 color = Color(0xffA09C9C)
             )
         }
 
         Spacer(modifier = Modifier .padding(30.dp))
         OutlinedTextField(
-            value = userNameState.value,
+            value = emailState.value,
             onValueChange = {
-                userNameState.value = it
+                emailState.value = it
             },
             isError = isErrorState.value,
             shape = RoundedCornerShape(16.dp),
             label = {
-                Text(text = "email")
+                Text(text = stringResource(id = R.string.email))
             },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -134,7 +139,7 @@ fun MytripLogin (controleDeNavegacao: NavHostController) {
             visualTransformation = PasswordVisualTransformation(),
             shape = RoundedCornerShape(16.dp),
             label = {
-                Text(text = "password")
+                Text(text = stringResource(id = R.string.password))
             },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Password,
@@ -165,14 +170,15 @@ fun MytripLogin (controleDeNavegacao: NavHostController) {
 
         ) {
             Text(text = messageErrorState.value,
-                color = Color.Red,
-
+                color = Color.Red
             )
             }
 
         Spacer(modifier = Modifier .padding(10.dp))
         Button(onClick = {
-            if (userNameState.value == "mendes@mendes" && senhaState.value == "1234"){
+
+            val (usuarioEncontrado, dadosUsuario) = cr.login(emailState.value, senhaState.value)
+            if (usuarioEncontrado){
             controleDeNavegacao.navigate("home")
         } else{
             isErrorState.value = true
@@ -187,7 +193,7 @@ fun MytripLogin (controleDeNavegacao: NavHostController) {
 
         ) {
             Text(
-                text = "SING IN",
+                text = stringResource(id = R.string.sing_in),
                 fontWeight = FontWeight.ExtraBold
             )
             Spacer(modifier = Modifier.width(10.dp))
@@ -209,13 +215,15 @@ fun MytripLogin (controleDeNavegacao: NavHostController) {
 
             Text(
                 modifier = Modifier,
-                text = "Don’t have an account?  ",
+                text = stringResource(id = R.string.text_sing_up),
                 color = Color(0xFFA09C9C)
             )
+            Spacer(modifier = Modifier.width(12.dp))
             Text(
-                modifier = Modifier.padding(end = 25.dp)
+                modifier = Modifier
+                    .padding(end = 25.dp)
                     .clickable { controleDeNavegacao.navigate("cadastro") },
-                text = "Sign up",
+                text = stringResource(id = R.string.sing_up),
                 color = Color(0xFFCF06F0),
                 fontWeight = FontWeight.Bold
             )
