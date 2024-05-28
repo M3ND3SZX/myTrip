@@ -1,5 +1,6 @@
 package br.senai.sp.jandira.mytrip.screens
 
+import android.annotation.SuppressLint
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -52,6 +53,7 @@ import br.senai.sp.jandira.mytrip.R
 import br.senai.sp.jandira.mytrip.model.Cadastro
 import br.senai.sp.jandira.mytrip.repository.CadastroRepository
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun NovaConta(controleDeNavegacao: NavHostController) {
 
@@ -86,6 +88,7 @@ fun NovaConta(controleDeNavegacao: NavHostController) {
     var messageErrorState = remember {
         mutableStateOf("")
     }
+
     val cr = CadastroRepository(LocalContext.current)
 
     Column(
